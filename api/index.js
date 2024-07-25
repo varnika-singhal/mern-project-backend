@@ -5,9 +5,8 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const connectDB = require("../config/dbConnect");
 const mongoose = require("mongoose");
-var cors = require('cors')
-const corsOptions = require('../config/corsOptions');
-
+var cors = require("cors");
+const corsOptions = require("../config/corsOptions");
 
 connectDB();
 //user routes => /api/users and /api/user
@@ -17,8 +16,7 @@ app.use(express.json()); //middleware to parse json
 // user routes for /api/users and /api/user
 app.use("/api", require("../routes/userRoutes"));
 
-
-// article routes 
+// article routes
 
 app.use("/api/articles", require("../routes/articleRoutes"));
 
@@ -30,7 +28,6 @@ app.use("/api/tags", require("../routes/tagRoutes"));
 
 app.use("/api/articles", require("../routes/commentRoutes"));
 
-
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
 
@@ -39,6 +36,6 @@ mongoose.connection.once("open", () => {
   });
 });
 
-mongoose.connection.on('error', (err) => {
-    console.log('Error while connection to MongoDB: ',err)
+mongoose.connection.on("error", (err) => {
+  console.log("Error while connection to MongoDB: ", err);
 });

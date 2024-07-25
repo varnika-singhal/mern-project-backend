@@ -51,20 +51,19 @@ const articleSchema = new mongoose.Schema(
 
 articleSchema.plugin(uniqueValidator);
 
-
 //middleware to run before saving the article
 
-articleSchema.pre('save', function(next){
+articleSchema.pre("save", function (next) {
+  this.slug = slugify(this.title, { lower: true, replacement: "-" });
 
-    this.slug = slugify(this.title, {lower:true, replacement:'-'});
-
-    next();
-} )
+  next();
+});
 
 //user is the logged in user
 articleSchema.methods.toArticleResponse = async function (user) {
   const authorObj = await User.findById(this.author).exec();
-
+  console.log("authorObj: ", authorObj);
+  if (!authorObj) return { message: "Author not found" };
   return {
     slug: this.slug,
     title: this.title,
@@ -79,16 +78,14 @@ articleSchema.methods.toArticleResponse = async function (user) {
 };
 
 articleSchema.methods.addComment = async function (commentId) {
-
-  if(this.comments.indexOf(commentId) === -1){
+  if (this.comments.indexOf(commentId) === -1) {
     this.comments.push(commentId);
   }
   return this.save();
 };
 
-
 articleSchema.methods.removeComment = async function (commentId) {
-  if(this.comments.indexOf(commentId) !== -1){
+  if (this.comments.indexOf(commentId) !== -1) {
     this.comments.remove(commentId);
   }
   return this.save();
